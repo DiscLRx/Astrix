@@ -1,0 +1,155 @@
+﻿@page "~/browse/{locationName}/{*path}"
+@model PocketExplorer.Web.Pages.FileBrowseModel
+@{
+    var pathArr = Request.Path.ToString().TrimEnd('/').Split('/');
+    pathArr = [pathArr[0], .. pathArr[2..]];
+    var currentPath = string.Join("/", pathArr);
+    currentPath = currentPath.Trim('/');
+    for (var i = 0; i < pathArr.Length; i++)
+    {
+        pathArr[i] = pathArr[i].Replace("+", "%2B");
+        pathArr[i] = $"{System.Web.HttpUtility.UrlDecode(pathArr[i])}/";
+    }
+
+}
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+    html {
+        background: rgb(30, 30, 30);
+    }
+
+    td, th {
+        text-align: left;
+        padding: 3px 10px 3px 3px;
+    }
+
+    th {
+        color: rgb(255, 255, 255);
+        font-size: 16px;
+    }
+
+    td {
+        color: rgb(200, 200, 200);
+        font-size: 15px;
+    }
+
+    table {
+        border-color: rgba(150, 150, 150, 1);
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    a {
+        text-decoration: none;
+        color: rgb(0, 190, 255);
+        font-size: 16px;
+    }
+
+        a:hover {
+            color: rgb(0, 210, 255);
+        }
+
+        a:active {
+            color: rgb(0, 230, 255);
+        }
+
+    .size, .last-modify {
+        text-align: right;
+    }
+
+    h4 > a:nth-child(1)::before {
+        content: 'HOME';
+    }
+
+    input[type=file] {
+        color: rgba(255, 255, 255, 1);
+        background-color: rgba(60, 60, 60, 1);
+        border-radius: .25rem;
+        max-width: 60%;
+    }
+
+        input[type=file]::file-selector-button, #upload-btn {
+            padding: 6px;
+            font-size: 1rem;
+            color: #fff;
+            border-radius: .25rem;
+            border: 1px solid #2a80eb;
+            background-color: #2a80eb;
+            cursor: pointer;
+            border: none;
+            padding: 0 0.65rem;
+            line-height: 2.3rem;
+        }
+
+</style>
+
+<form enctype="multipart/form-data" id="fileForm">
+    <input type="file" name="formFiles" />
+    <button type="button" id="upload-btn">上传</button>
+</form>
+
+<h4>
+    @for (int i = 0; i < pathArr.Length; i++)
+    {<a href="@string.Join("", pathArr[0..(i + 1)])">@pathArr[i]</a>}
+</h4>
+
+<table border="1" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="size">Size</th>
+            <th class="last-modify">Last Modify</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DirectoryItems)
+        {
+            <tr>
+                <td>
+                    <a href="/@currentPath/@item.Name">@item.Name</a>
+                </td>
+                <td class="size">@(item.Type == "file" ? item.Size : "")</td>
+                <td class="last-modify">@item.LastModify.ToString("yyyy/MM/dd hh:mm:ss")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function renderSize(srcsize) {
+        if (srcsize === 0) {
+            return '0 B'
+        }
+        let unitArr = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+        let index = Math.floor(Math.log(srcsize) / Math.log(1024))
+        let size = srcsize / Math.pow(1024, index)
+        size = size.toFixed(2)
+        return `${size} ${unitArr[index]}`
+    }
+
+    document.querySelectorAll('td.size').forEach(e => {
+        const sizeStr = e.innerText;
+        if (sizeStr === '') {
+            return;
+        }
+        let size = parseInt(sizeStr);
+        e.innerText = renderSize(size)
+    });
+
+    document.querySelector('#upload-btn').onclick = () => {
+
+        const form = document.querySelector('#fileForm')
+
+        const formData = new FormData(form)
+        const xhr = new XMLHttpRequest()
+
+        xhr.open('POST', '/api/upload/@currentPath', true);
+        xhr.onreadystatechange = () => {
+            location.reload()
+        };
+        xhr.send(formData);
+
+    }
+</script>
