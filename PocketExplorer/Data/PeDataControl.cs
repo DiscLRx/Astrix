@@ -69,4 +69,16 @@ public class PeDataControl : BasePeDataControl
     public PeLocation GetLocation(int instancePort, string name)
         => Data.Instances.Single(inst => inst.Port == instancePort)
         .Locations.Single(lc => lc.Name == name);
+
+    public void SetInstancePassword(PeInstance instance, string password)
+    {
+        instance.Password = password;
+        SaveChange();
+    }
+
+    public void SetInstanceLocked(PeInstance instance, bool isLocked)
+    {
+        instance.IsLocked = isLocked;
+        SaveChange();
+    }
 }

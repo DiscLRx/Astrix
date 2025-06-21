@@ -106,6 +106,8 @@ public class PocketExplorerViewModel : INotifyPropertyChanged
 
     public ICommand SetInstanceEnableCmd { get; set; }
 
+    public ICommand SwitchAccessLock { get; set; }
+
     #endregion
 
     public void UpdatePorts() => Ports = _peControl.GetPorts().ToList();
@@ -236,6 +238,19 @@ public class PocketExplorerViewModel : INotifyPropertyChanged
                 _ = _peControl.StartInstanceAsync(CurrentInstance.Port);
             }
         });
+
+        SwitchAccessLock = new CommonCommand((_) =>
+        {
+            if (string.IsNullOrWhiteSpace(CurrentInstance.Password) && !CurrentInstance.IsLocked)
+            {
+                _peControl.SetInstancePassword(CurrentInstance, string.Empty);
+                return;
+            }
+
+            _peControl.SetInstanceLocked(CurrentInstance, !CurrentInstance.IsLocked);
+            _peControl.SetInstancePassword(CurrentInstance, CurrentInstance.Password);
+        });
+
     }
 
 }

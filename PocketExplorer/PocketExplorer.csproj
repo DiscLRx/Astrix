@@ -6,7 +6,6 @@
 		<Nullable>enable</Nullable>
 		<OutputType>Library</OutputType>
 		<PublishSingleFile>true</PublishSingleFile>
-		<PublishTrimmed>true</PublishTrimmed>
 		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 

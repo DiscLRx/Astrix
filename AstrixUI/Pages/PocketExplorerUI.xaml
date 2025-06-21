@@ -65,35 +65,55 @@
                 <GridView/>
             </ListView.View>
         </ListView>
-        <DockPanel DockPanel.Dock="Left" LastChildFill="False">
+        <DockPanel DockPanel.Dock="Left" LastChildFill="True">
             <Border DockPanel.Dock="Top" Background="#222" Width="240" Margin="10,5,10,15" Padding="15,15,15,15" CornerRadius="5">
-                <StackPanel Orientation="Horizontal">
-                    <Button DockPanel.Dock="Left" BorderThickness="2" Content="⏻" FontSize="22" Foreground="#06f" Background="#222" Height="50" Width="50"
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Button BorderThickness="2" Content="⏻" FontSize="22" Foreground="#06f" Background="#222" Height="50" Width="50"
                             Command="{Binding SetInstanceEnableCmd}">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ButtonBaseStyle}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentInstance.Enable}" Value="True">
-                                        <Setter Property="BorderBrush" Value="#5b5" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding CurrentInstance.Enable}" Value="False">
-                                        <Setter Property="BorderBrush" Value="#777" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <hc:ComboBox Margin="25,0,0,0" Width="80" Height="35" VerticalAlignment="Center" ItemsSource="{Binding Ports}" SelectedValue="{Binding CurrentInstance.Port, Mode=OneWay}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding SelectedPortChangeCmd}"
-                                               CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=hc:ComboBox}, Path=SelectedValue}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </hc:ComboBox>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ButtonBaseStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentInstance.Enable}" Value="True">
+                                            <Setter Property="BorderBrush" Value="#5b5" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentInstance.Enable}" Value="False">
+                                            <Setter Property="BorderBrush" Value="#777" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <hc:ComboBox Margin="25,0,0,0" Width="80" Height="35" VerticalAlignment="Bottom" ItemsSource="{Binding Ports}" SelectedValue="{Binding CurrentInstance.Port, Mode=OneWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding SelectedPortChangeCmd}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=hc:ComboBox}, Path=SelectedValue}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </hc:ComboBox>
+                        <Button Margin="15,0,0,0" Height="35" Width="35" VerticalAlignment="Bottom" Command="{Binding SwitchAccessLock}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ButtonBaseStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentInstance.IsLocked}" Value="True">
+                                            <Setter Property="Content" Value="🔒" />
+                                            <Setter Property="Foreground" Value="#27f"/>
+                                            <Setter Property="BorderBrush" Value="#27f"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentInstance.IsLocked}" Value="False">
+                                            <Setter Property="Content" Value="🔓" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                    <TextBox Margin="0,15,0,0" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Password" MaxLength="2000"
+                             IsReadOnly="{Binding CurrentInstance.IsLocked}" Text="{Binding CurrentInstance.Password}"/>
                 </StackPanel>
             </Border>
-            <Border DockPanel.Dock="Top" Background="#222" Width="240" Margin="10,5,10,15" Padding="15,8,15,8" CornerRadius="5">
+            <Border DockPanel.Dock="Top" Background="#222" Width="240" Margin="10,0,10,15" Padding="15,8,15,8" CornerRadius="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -112,7 +132,7 @@
                             Command="{Binding AddLocationCmd}" />
                 </Grid>
             </Border>
-            <Border DockPanel.Dock="Top" Background="#222" Width="240" Margin="10,5,10,15" CornerRadius="5">
+            <Border DockPanel.Dock="Top" Background="#222" Width="240" Margin="10,0,10,15" CornerRadius="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -122,11 +142,11 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBox Text="{Binding InstancePortText}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Port" Margin="15" />
+                    <TextBox Text="{Binding InstancePortText}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Port" Margin="15,15,15,0" />
                     <Button Command="{Binding AddInstanceCmd}"
-                            Content="CREATE" Foreground="#27f" BorderBrush="#27f" Grid.Row="1" Grid.Column="0" Width="90" Margin="15,0,0,15" HorizontalAlignment="Left"/>
+                            Content="CREATE" Foreground="#27f" BorderBrush="#27f" Grid.Row="1" Grid.Column="0" Width="90" Margin="15,15,0,15" HorizontalAlignment="Left"/>
                     <Button Command="{Binding RemoveInstanceCmd}"
-                            Content="DEL" Foreground="#f28" Grid.Row="1" Grid.Column="2" Width="90" Margin="0,0,15,15" HorizontalAlignment="Right"/>
+                            Content="DEL" Foreground="#f28" Grid.Row="1" Grid.Column="2" Width="90" Margin="0,15,15,15" HorizontalAlignment="Right"/>
                 </Grid>
             </Border>
         </DockPanel>

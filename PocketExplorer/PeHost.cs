@@ -1,6 +1,7 @@
 ﻿using PocketExplorer.Data;
 using PocketExplorer.Web;
 using PocketExplorer.Web.Controllers;
+using PocketExplorer.Web.Middleware;
 using PocketExplorer.Web.Pages;
 using System.Net;
 
@@ -21,8 +22,8 @@ public class PeHost
         });
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(FileBrowseModel).Assembly)
-        .AddApplicationPart(typeof(FileUploadController).Assembly)
-        .AddApplicationPart(typeof(FileRangeController).Assembly);
+            .AddApplicationPart(typeof(FileUploadController).Assembly)
+            .AddApplicationPart(typeof(FileRangeController).Assembly);
         builder.Services.AddRazorPages(configure =>
         {
             configure.RootDirectory = "/Web/Pages";
@@ -30,7 +31,8 @@ public class PeHost
         builder.Services.AddSingleton<DataKeeper>();
         _app = builder.Build();
         _app.Services.GetRequiredService<DataKeeper>().PeInstance = instance;
-        _app.UseFileRedirector();
+        _app.UsePeAuthentication();
+        _app.UsePeRedirector();
         _app.UseRouting();
         _app.MapControllers();
         _app.MapRazorPages();

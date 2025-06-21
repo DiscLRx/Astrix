@@ -1,0 +1,94 @@
+﻿@page "/auth"
+@model PocketExplorer.Web.Pages.AuthModel
+@{
+}
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+    html, body {
+        background: #000;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: center;
+        justify-content: center;
+        user-select: none;
+    }
+
+    #panel {
+        display: flex;
+        flex-direction: column;
+        width: 20rem;
+        justify-content: flex-start;
+        user-select: none;
+    }
+
+    input {
+        background-color: #1c1c1e;
+        border: #444 solid 0.15rem;
+        outline: none;
+        border-radius: .5rem;
+        height: 2.3rem;
+        width: 18rem;
+        margin: 0.5rem;
+        color: #fff;
+        font-size: 1.1rem;
+        padding: 0 0.6rem 0 0.6rem;
+    }
+
+        input:focus {
+            border: #bbb solid 0.15rem;
+        }
+
+    button {
+        color: #fff;
+        font-weight: bold;
+        border: 0;
+        border-radius: 0.5rem;
+        background-color: #07f;
+        height: 2.3rem;
+        width: 6rem;
+        margin: 0.5rem;
+        user-select: none;
+        font-size: 1.1rem;
+    }
+
+        button:hover {
+            background-color: #0069ff;
+        }
+
+        button:active {
+            background-color: #0060ff;
+        }
+</style>
+
+<div id="panel">
+    <input placeholder="Enter the access key" id="in" maxlength="2000" autofocus/>
+    <button id="ok">OK</button>
+</div>
+
+<script>
+    document.querySelector('#ok').onclick = () => {
+        let inputText = document.querySelector('#in').value
+        let now = new Date()
+        let exp = new Date()
+        exp.setDate(now.getDate() + 7)
+
+        document.cookie = `Auth-Key=${inputText}; expires=${exp.toUTCString()}; path=/`
+        location.reload()
+    }
+
+    document.querySelector('#in').onkeypress = (ev) => {
+        if (ev.key === 'Enter') {
+            document.querySelector('#ok').click()
+        }
+    }
+</script>

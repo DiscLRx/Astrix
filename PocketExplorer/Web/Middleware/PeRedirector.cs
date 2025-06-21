@@ -3,7 +3,7 @@ using PocketExplorer.Web.Utils;
 
 namespace PocketExplorer
 {
-    public class FileRedirector(RequestDelegate next, DataKeeper dataKeeper)
+    public class PeRedirector(RequestDelegate next, DataKeeper dataKeeper)
     {
         private readonly RequestDelegate _next = next;
         private readonly DataKeeper _dataKeeper = dataKeeper;
@@ -13,6 +13,14 @@ namespace PocketExplorer
             var locations = _dataKeeper.PeInstance.Locations;
 
             var reqPath = httpContext.Request.Path.Value?.Trim('/') ?? "";
+
+            var authTag = (int) httpContext.Items["Auth-Tag"]!;
+            if (authTag == 1)
+            {
+                httpContext.Request.Path = "/auth";
+                await _next(httpContext);
+                return;
+            }
 
             if (httpContext.Request.Method == "GET" && !string.IsNullOrWhiteSpace(reqPath))
             {
@@ -55,8 +63,6 @@ namespace PocketExplorer
                 }
             }
 
-
-
             await _next(httpContext);
         }
 
@@ -64,9 +70,9 @@ namespace PocketExplorer
 
     public static class FileRedirectorExtensions
     {
-        public static IApplicationBuilder UseFileRedirector(this IApplicationBuilder builder)
+        public static IApplicationBuilder UsePeRedirector(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<FileRedirector>();
+            return builder.UseMiddleware<PeRedirector>();
         }
     }
 }

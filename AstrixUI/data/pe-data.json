@@ -2,7 +2,9 @@
   "Instances": [
     {
       "Port": 80,
-      "Locations": []
+      "Locations": [],
+      "IsLocked": true,
+      "Password": ""
     }
   ]
 }

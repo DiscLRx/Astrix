@@ -70,4 +70,10 @@ public class PeControl
         _peHosts.Remove(port);
     }
 
+    public void SetInstanceLocked(PeInstance instance, bool isLocked) 
+        => _dataControl.SetInstanceLocked(instance, isLocked);
+
+    public void SetInstancePassword(PeInstance instance, string password) 
+        => _dataControl.SetInstancePassword(instance, password);
+
 }

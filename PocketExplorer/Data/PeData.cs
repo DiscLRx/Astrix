@@ -3,6 +3,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
+/*
+ * 不要直接设置PocketExplorer.Data中的属性值，应该通过PeDataControl来操作数据，以将数据持久化到文件中
+ */
 namespace PocketExplorer.Data;
 
 public class PeLocation(string name, string path) : INotifyPropertyChanged
@@ -63,6 +66,26 @@ public class PeInstance(int port, ObservableCollection<PeLocation> locations) : 
             OnPropertyChanged();
         }
     } = locations;
+
+    public bool IsLocked
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string Password
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = string.Empty;
 
     [JsonIgnore]
     public bool Enable

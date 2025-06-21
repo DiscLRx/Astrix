@@ -13,12 +13,54 @@
         padding: 0;
     }
 
+    .menu {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 3rem;
+        background-color: #1c1c1e;
+        align-content: center;
+        justify-content: space-between;
+    }
+
+    .menu-item {
+        margin: 0.5rem 2rem;
+    }
+
+    #port {
+        color: #aaa;
+        height: 1.5rem;
+        font-weight: bold;
+        font-size: 1.2rem;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+    }
+
+    #exit {
+        color: #f28;
+        height: 2rem;
+        width: 4rem;
+        font-weight: bold;
+        background-color: #000;
+        border: #f28 solid 0.15rem;
+        border-radius: 0.5rem;
+    }
+
+        #exit:hover {
+            background-color: #222;
+        }
+
+        #exit:active {
+            background-color: #333;
+        }
+
     .locationList {
         margin: 0.8rem;
         display: flex;
         flex-direction: column;
         width: calc(100% - 1.6rem);
-        height: calc(100% - 1.6rem);
+        height: calc(100% - 1.6rem - 3rem);
         overflow-y: hidden;
         overflow-y: auto;
     }
@@ -39,7 +81,7 @@
         border-radius: 0.5rem;
         background-color: #07f;
         height: 3rem;
-        width:3rem;
+        width: 3rem;
     }
 
         .locationBtn:hover {
@@ -67,6 +109,10 @@
     }
 </style>
 
+<div class="menu">
+    <div class="menu-item" id="port">PORT @Model.Port</div>
+    <button class="menu-item" id="exit">Exit</button>
+</div>
 
 <div class="locationList">
     @foreach (var location in locations)
@@ -84,3 +130,10 @@
         </div>
     }
 </div>
+
+<script>
+    document.querySelector('#exit').onclick = () => {
+        document.cookie = "Auth-Key=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        location.reload();
+    };
+</script>
