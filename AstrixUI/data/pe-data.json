@@ -3,7 +3,7 @@
     {
       "Port": 80,
       "Locations": [],
-      "IsLocked": true,
+      "IsLocked": false,
       "Password": ""
     }
   ]
