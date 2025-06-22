@@ -1,6 +1,13 @@
 ﻿using AstrixUI.Pages;
+using HandyControl.Controls;
+using HandyControl.Interactivity;
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using HcTabControl = HandyControl.Controls.TabControl;
 using HcTabItem = HandyControl.Controls.TabItem;
 using HcWindow = HandyControl.Controls.Window;
@@ -26,6 +33,15 @@ public class WindowStatus() : INotifyPropertyChanged
 
 public partial class MainWindow : HcWindow
 {
+    private static ImageSource _icon = Imaging.CreateBitmapSourceFromHIcon(new Icon(@"Assets/Astrix.ico").Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+
+    private NotifyIcon _notifyIcon = new()
+    {
+        Icon = _icon,
+        Text = "Astrix",
+        Visibility = Visibility.Visible
+    };
+
     private Frame _pocketExplorerFrame = new()
     {
         BorderThickness = new System.Windows.Thickness(0),
@@ -36,11 +52,49 @@ public partial class MainWindow : HcWindow
     public bool IsWindowTopMost { get; set; }
     public MainWindow()
     {
+        Icon = _icon;
         InitializeComponent();
+
+        _notifyIcon.Init();
+        _notifyIcon.Click += ShowWindow;
+        SetNotifyIconMenu();
 
         contentControl.Content = _pocketExplorerFrame;
 
         topMostBtn.DataContext = WindowStatus;
+    }
+
+    private void SetNotifyIconMenu()
+    {
+        var exitMenuItem = new MenuItem()
+        {
+            Header = "Exit",
+            Width = 80
+        };
+        exitMenuItem.Click += (s, e) =>
+        {
+            Application.Current.Shutdown();
+        };
+        var contextMenu = new ContextMenu()
+        {
+            ItemsSource = new MenuItem[]
+            {
+                exitMenuItem
+            }
+        };
+        _notifyIcon.ContextMenu = contextMenu;
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        Hide();
+        e.Cancel = true;
+    }
+
+    private void ShowWindow(object sender, RoutedEventArgs e)
+    {
+        Show();
+        Activate();
     }
 
     private void ToggleTopMost(object sender, System.Windows.RoutedEventArgs e)

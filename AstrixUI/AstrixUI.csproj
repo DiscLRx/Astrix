@@ -23,11 +23,15 @@
 		<None Include="data\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Include="Assets\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="HandyControl" Version="3.5.1" />
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+	  <PackageReference Include="System.Drawing.Common" Version="10.0.0-preview.5.25277.114" />
 	</ItemGroup>
 
 	<ItemGroup>
