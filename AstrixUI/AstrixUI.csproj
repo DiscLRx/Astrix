@@ -9,11 +9,16 @@
 		<LangVersion>preview</LangVersion>
 		<PublishSingleFile>true</PublishSingleFile>
 		<AssemblyName>Astrix</AssemblyName>
+		<ApplicationIcon>Assets\Astrix.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	  <DebugType>none</DebugType>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="Assets\Astrix.ico" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Properties\" />
