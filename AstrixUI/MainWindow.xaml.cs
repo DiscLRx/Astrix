@@ -1,8 +1,8 @@
 ﻿using AstrixUI.Pages;
 using HandyControl.Controls;
-using HandyControl.Interactivity;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO.Pipes;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -44,14 +44,16 @@ public partial class MainWindow : HcWindow
 
     private Frame _pocketExplorerFrame = new()
     {
-        BorderThickness = new System.Windows.Thickness(0),
+        BorderThickness = new Thickness(0),
         Content = new PocketExplorerUI()
     };
 
     public WindowStatus WindowStatus = new();
-    public bool IsWindowTopMost { get; set; }
+
     public MainWindow()
     {
+        new AstrixAwakePipeServer(this).Run();
+
         Icon = _icon;
         InitializeComponent();
 
@@ -117,4 +119,38 @@ public partial class MainWindow : HcWindow
             _ => throw new NotImplementedException()
         };
     }
+}
+
+public class AstrixAwakePipeServer
+{
+    private readonly MainWindow _mw;
+
+    public AstrixAwakePipeServer(MainWindow mw)
+    {
+        _mw = mw;
+    }
+
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            while (true)
+            {
+                using var server = new NamedPipeServerStream("AstrixAwakePipe", PipeDirection.In, 1);
+                await server.WaitForConnectionAsync();
+                ShowWindow();
+            }
+        });
+    }
+
+    private void ShowWindow()
+    {
+        _mw.Dispatcher.Invoke(() =>
+        {
+            _mw.Show();
+            _mw.Activate();
+        });
+    }
+
+
 }
