@@ -1,0 +1,21 @@
+﻿<hc:Window x:Class="AstrixUI.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:local="clr-namespace:AstrixUI"
+        mc:Ignorable="d"
+        NonClientAreaForeground="#fff"
+        NonClientAreaBackground="#1c1c1c"
+        OtherButtonHoverForeground="#fff"
+        OtherButtonHoverBackground="#111"
+        CloseButtonHoverBackground="#d28"
+        Background="#1c1c1c"
+        Title="Settings" Height="300" Width="350">
+    <StackPanel Orientation="Vertical" Margin="30">
+        <StackPanel Orientation="Horizontal">
+            <CheckBox x:Name="startAtSystemBootCheckBox" Content="Start at system boot" Checked="StartAtSystemBootChecked" Unchecked="StartAtSystemBootUnchecked" />
+        </StackPanel>
+    </StackPanel>
+</hc:Window>

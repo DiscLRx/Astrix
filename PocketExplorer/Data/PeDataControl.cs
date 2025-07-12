@@ -4,7 +4,7 @@ namespace PocketExplorer.Data;
 
 public class BasePeDataControl
 {
-    private const string DataFilePath = "data/pe-data.json";
+    private readonly string DataFilePath = $"{AppDomain.CurrentDomain.BaseDirectory}/data/pe-data.json";
 
     private PeStatus _data;
 

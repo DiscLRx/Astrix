@@ -2,7 +2,9 @@
 using HandyControl.Controls;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.IO.Pipes;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -33,7 +35,7 @@ public class WindowStatus() : INotifyPropertyChanged
 
 public partial class MainWindow : HcWindow
 {
-    private static ImageSource _icon = Imaging.CreateBitmapSourceFromHIcon(new Icon(@"Assets/Astrix.ico").Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+    private static ImageSource _icon = Imaging.CreateBitmapSourceFromHIcon(new Icon($"{AppDomain.CurrentDomain.BaseDirectory}/Assets/Astrix.ico").Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 
     private NotifyIcon _notifyIcon = new()
     {
@@ -71,7 +73,8 @@ public partial class MainWindow : HcWindow
         var exitMenuItem = new MenuItem()
         {
             Header = "Exit",
-            Width = 80
+            Width = 80,
+            Padding = default
         };
         exitMenuItem.Click += (s, e) =>
         {
@@ -99,7 +102,7 @@ public partial class MainWindow : HcWindow
         Activate();
     }
 
-    private void ToggleTopMost(object sender, System.Windows.RoutedEventArgs e)
+    private void ToggleTopMost(object sender, RoutedEventArgs e)
     {
         WindowStatus.IsWindowTopMost = !WindowStatus.IsWindowTopMost;
         Topmost = WindowStatus.IsWindowTopMost;
@@ -118,6 +121,13 @@ public partial class MainWindow : HcWindow
             "pe" => _pocketExplorerFrame,
             _ => throw new NotImplementedException()
         };
+    }
+
+    private void OpenSetting(object sender, RoutedEventArgs e)
+    {
+        var settingWindow = new SettingWindow();
+        settingWindow.Owner = this;
+        settingWindow.ShowDialog();
     }
 }
 

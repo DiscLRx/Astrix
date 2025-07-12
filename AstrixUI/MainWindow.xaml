@@ -19,8 +19,19 @@
 
     </hc:Window.Resources>
     <hc:Window.NonClientAreaContent>
-        <Grid HorizontalAlignment="Right">
-            <Button x:Name="topMostBtn" BorderThickness="0" hc:BorderElement.CornerRadius="0" Click="ToggleTopMost" Content="📌">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="settingBtn" BorderThickness="0" hc:BorderElement.CornerRadius="0" Click="OpenSetting" Width="45" Content="⚙️">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource ButtonBaseStyle}" TargetType="Button">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#111"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button x:Name="topMostBtn" BorderThickness="0" hc:BorderElement.CornerRadius="0" Click="ToggleTopMost" Width="45" Content="📌">
                 <Button.Style>
                     <Style BasedOn="{StaticResource ButtonBaseStyle}" TargetType="Button">
                         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
@@ -35,7 +46,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-        </Grid>
+        </StackPanel>
     </hc:Window.NonClientAreaContent>
     <DockPanel>
         <hc:TabControl SelectedIndex="0" DockPanel.Dock="Left" TabStripPlacement="Left"

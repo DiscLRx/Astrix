@@ -15,7 +15,7 @@ public partial class App : Application
         {
             using var pipeClient = new NamedPipeClientStream(".", "AstrixAwakePipe", PipeDirection.Out, PipeOptions.None);
             using var sw = new StreamWriter(pipeClient);
-            pipeClient.Connect();
+            pipeClient.Connect(TimeSpan.FromSeconds(3));
             Shutdown();
         }
     }
