@@ -16,7 +16,7 @@
         Height="550" Width="900"
         MinHeight="450" MinWidth="600">
     <hc:Window.Resources>
-
+       
     </hc:Window.Resources>
     <hc:Window.NonClientAreaContent>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -52,6 +52,7 @@
         <hc:TabControl SelectedIndex="0" DockPanel.Dock="Left" TabStripPlacement="Left"
                     Style="{StaticResource TabControlInLine}"  BorderThickness="0" SelectionChanged="MenuTabChanged">
             <hc:TabItem Header="Pocket&#13;Explorer" Name="pe" Width="80"/>
+            <hc:TabItem Header="M3U8&#13;Runner" Name="m3u8r" Width="80"/>
         </hc:TabControl>
         <ContentControl Margin="0 8 8 8" Name="contentControl" />
     </DockPanel>

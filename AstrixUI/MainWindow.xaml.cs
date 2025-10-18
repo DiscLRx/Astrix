@@ -1,13 +1,9 @@
 ﻿using AstrixUI.Pages;
 using HandyControl.Controls;
 using System.ComponentModel;
-using System.Drawing;
-using System.IO;
 using System.IO.Pipes;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using HcTabControl = HandyControl.Controls.TabControl;
@@ -35,7 +31,7 @@ public class WindowStatus() : INotifyPropertyChanged
 
 public partial class MainWindow : HcWindow
 {
-    private static ImageSource _icon = Imaging.CreateBitmapSourceFromHIcon(new Icon($"{AppDomain.CurrentDomain.BaseDirectory}/Assets/Astrix.ico").Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+    private static ImageSource _icon = new BitmapImage(new Uri($"{AppDomain.CurrentDomain.BaseDirectory}/Assets/Astrix.ico"));
 
     private NotifyIcon _notifyIcon = new()
     {
@@ -50,11 +46,19 @@ public partial class MainWindow : HcWindow
         Content = new PocketExplorerUI()
     };
 
+    private Frame _m3u8RunnerFrame = new()
+    {
+        BorderThickness = new Thickness(0),
+        Content = new M3u8RunnerUI()
+    };
+
     public WindowStatus WindowStatus = new();
 
     public MainWindow()
     {
         new AstrixAwakePipeServer(this).Run();
+
+        
 
         Icon = _icon;
         InitializeComponent();
@@ -119,6 +123,7 @@ public partial class MainWindow : HcWindow
         contentControl.Content = selectedTab?.Name switch
         {
             "pe" => _pocketExplorerFrame,
+            "m3u8r" => _m3u8RunnerFrame,
             _ => throw new NotImplementedException()
         };
     }

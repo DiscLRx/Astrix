@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36015.10
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11012.119 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AstrixUI", "AstrixUI\AstrixUI.csproj", "{BBC43F7D-8AD1-47C8-83F6-616369F5FDF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocketExplorer", "PocketExplorer\PocketExplorer.csproj", "{952B3D29-003A-4DA6-86FC-184A9C780E72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M3u8Runner", "M3u8Runner\M3u8Runner.csproj", "{20BC1D31-A59C-49B7-A89F-EFAC1AC76EB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{952B3D29-003A-4DA6-86FC-184A9C780E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{952B3D29-003A-4DA6-86FC-184A9C780E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{952B3D29-003A-4DA6-86FC-184A9C780E72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20BC1D31-A59C-49B7-A89F-EFAC1AC76EB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20BC1D31-A59C-49B7-A89F-EFAC1AC76EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20BC1D31-A59C-49B7-A89F-EFAC1AC76EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20BC1D31-A59C-49B7-A89F-EFAC1AC76EB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

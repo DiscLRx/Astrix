@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <DebugType>none</DebugType>
+		<DebugType>none</DebugType>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,22 +26,37 @@
 
 	<ItemGroup>
 		<None Include="data\**">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Include="Assets\**">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="HandyControl" Version="3.5.1" />
-	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-	  <PackageReference Include="System.Drawing.Common" Version="10.0.0-preview.5.25277.114" />
-	  <PackageReference Include="TaskScheduler" Version="2.12.2" />
+		<PackageReference Include="HandyControl" Version="3.5.1" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+		<PackageReference Include="TaskScheduler" Version="2.12.2" />
+		<PackageReference Include="WPF-UI" Version="4.0.3" />
+		<PackageReference Include="System.Drawing.Common" Version="10.0.0-rc.2.25502.107" />
+
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\M3u8Runner\M3u8Runner.csproj" />
 		<ProjectReference Include="..\PocketExplorer\PocketExplorer.csproj" />
 	</ItemGroup>
+	<Target Name="CopyResourcesToOutDir" AfterTargets="AfterBuild">
+		<ItemGroup>
+			<ResourceFiles Include="..\M3u8Runner\res\**" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(OutDir)\Assets\%(RecursiveDir)" />
+	</Target>
+	<Target Name="CopyResourcesToPublishDir" AfterTargets="Publish">
+		<ItemGroup>
+			<ResourceFiles Include="..\M3u8Runner\res\**" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(PublishDir)\Assets\%(RecursiveDir)" />
+	</Target>
 
 </Project>
