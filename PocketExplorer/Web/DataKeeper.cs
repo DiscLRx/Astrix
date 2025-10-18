@@ -9,4 +9,6 @@ public class DataKeeper()
         get => field ?? throw new NullReferenceException("PeInstance is null");
         set;
     }
+
+    public Dictionary<string, byte[]> ThumbnailDict { get; } = [];
 }

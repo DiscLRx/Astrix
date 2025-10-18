@@ -1,23 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NuGet.Packaging;
 using PocketExplorer.Data;
+using PocketExplorer.Web.Controllers;
 using PocketExplorer.Web.Utils;
 
 namespace PocketExplorer.Web.Pages;
 
-public class FileBrowseModel : PageModel
+public class FileBrowseModel(DataKeeper dataKeeper) : PageModel
 {
     public List<DirectoryItem> DirectoryItems = [];
 
-    private List<PeLocation> _peLocations { get; set; }
+    private List<PeLocation> _peLocations = [.. dataKeeper.PeInstance.Locations];
+    private Dictionary<string, byte[]> _thumbnail = dataKeeper.ThumbnailDict;
 
     public string? LocationName { get; set; }
     public string? Path { get; set; }
-
-    public FileBrowseModel(DataKeeper dataKeeper)
-    {
-        _peLocations = [.. dataKeeper.PeInstance.Locations];
-    }
 
     public IActionResult OnGet(string locationName, string path)
     {
@@ -33,13 +31,18 @@ public class FileBrowseModel : PageModel
             return NotFound();
         }
 
-        var items = FileHelper.GetDirItems(locationRoot, path);
+        var (items, thumbnailDict) = FileHelper.GetDirItems(locationRoot, path);
         if (items is null)
         {
             return NotFound();
         }
+
+        _thumbnail.Clear();
+        _thumbnail.AddRange(thumbnailDict);
+
+        items.Sort();
+
         DirectoryItems = items;
         return Page();
     }
-
 }

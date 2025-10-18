@@ -2,7 +2,8 @@
 @model PocketExplorer.Web.Pages.FileBrowseModel
 @{
     var pathArr = Request.Path.ToString().TrimEnd('/').Split('/');
-    pathArr = [pathArr[0], .. pathArr[2..]];
+    pathArr = [pathArr[0], $"{pathArr[1]}/{pathArr[2]}", .. pathArr[3..]];
+
     var currentPath = string.Join("/", pathArr);
     currentPath = currentPath.Trim('/');
     for (var i = 0; i < pathArr.Length; i++)
@@ -10,12 +11,11 @@
         pathArr[i] = pathArr[i].Replace("+", "%2B");
         pathArr[i] = $"{System.Web.HttpUtility.UrlDecode(pathArr[i])}/";
     }
-
 }
 
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="format-detection" content="telephone=no" />
-<meta name="format-detection" content="email=no" />
+@* <meta name="viewport" content="width=device-width, initial-scale=1"/> *@
+<meta name="format-detection" content="telephone=no"/>
+<meta name="format-detection" content="email=no"/>
 
 <style>
     html {
@@ -46,17 +46,24 @@
 
     a {
         text-decoration: none;
-        color: rgb(0, 190, 255);
+        color: rgb(0, 170, 235);
         font-size: 16px;
     }
 
-        a:hover {
-            color: rgb(0, 210, 255);
-        }
+    a:hover {
+        color: rgb(0, 230, 255);
+    }
 
-        a:active {
-            color: rgb(0, 230, 255);
-        }
+    a:active {
+        color: rgb(0, 255, 255);
+    }
+
+    .thumb-area {
+        padding: 0;
+        width: 150px;
+        text-align: center;
+        font-size: 4rem;
+    }
 
     .size,
     .last-modify {
@@ -83,19 +90,19 @@
         font-size: 0.9rem;
     }
 
-        input[type=file]::file-selector-button,
-        #upload-btn {
-            padding: 6px;
-            font-size: 1rem;
-            color: #fff;
-            border-radius: .25rem;
-            border: 1px solid #2a80eb;
-            background-color: #2a80eb;
-            cursor: pointer;
-            border: none;
-            padding: 0 0.65rem;
-            line-height: 2.3rem;
-        }
+    input[type=file]::file-selector-button,
+    #upload-btn {
+        padding: 6px;
+        font-size: 1rem;
+        color: #fff;
+        border-radius: .25rem;
+        border: 1px solid #2a80eb;
+        background-color: #2a80eb;
+        cursor: pointer;
+        border: none;
+        padding: 0 0.65rem;
+        line-height: 2.3rem;
+    }
 
 
     #upload-panel {
@@ -130,7 +137,7 @@
 
 <div id="upload-panel">
     <form enctype="multipart/form-data" id="file-form">
-        <input type="file" name="formFiles" multiple />
+        <input type="file" name="formFiles" multiple/>
         <button type="button" id="upload-btn">上传</button>
     </form>
     <div id="upload-status-panel">
@@ -146,31 +153,73 @@
 </div>
 
 <h4>
-    @for (int i = 0; i < pathArr.Length; i++)
+    @for (var i = 0; i < pathArr.Length; i++)
     {
-        <a href="@string.Join("", pathArr[0..(i + 1)])">@pathArr[i]</a>
-    }
+        var subPathArr = pathArr[0..(i + 1)];
+        for (var j = 0; j < subPathArr.Length; j++)
+        {
+            if (j == 1)
+            {
+                var sArr = subPathArr[j].Trim('/').Split('/');
+                subPathArr[1] = System.Web.HttpUtility.UrlEncode(sArr[0]) + "/" + System.Web.HttpUtility.UrlEncode(sArr[1]);
+            }
+            else
+            {
+                subPathArr[j] = System.Web.HttpUtility.UrlEncode(subPathArr[j].Trim('/'));
+            }
+        }
+
+        var url = "/" + string.Join("/", subPathArr).TrimStart('/');
+        url = url.Replace("+", "%20");<a href="@url">@if (i == 1)
+            {@pathArr[i].Split('/', 2)[1]}
+            else
+            {@pathArr[i]}</a>}
 </h4>
 
 <table border="1" cellspacing="0">
     <thead>
-        <tr>
-            <th>Name</th>
-            <th class="size">Size</th>
-            <th class="last-modify">Last Modify</th>
-        </tr>
+    <tr>
+        <th class="thumb-area"></th>
+        <th>Name</th>
+        <th class="size">Size</th>
+        <th class="last-modify">Last Modify</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.DirectoryItems)
-        {
-            <tr>
-                <td>
-                    <a href="/@currentPath/@item.Name">@item.Name</a>
+    @foreach (var item in Model.DirectoryItems)
+    {
+        var itemNameUrl = System.Web.HttpUtility.UrlEncode(item.Name.Trim('/')).Replace("+", "%20");
+
+        <tr>
+            @if (item.Type == "dir")
+            {
+                <td class="thumb-area">
+                    📁
                 </td>
-                <td class="size">@(item.Type == "file" ? item.Size : "")</td>
-                <td class="last-modify">@item.LastModify.ToString("yyyy/MM/dd hh:mm:ss")</td>
-            </tr>
-        }
+                <td>
+                    <a href="/@currentPath/@itemNameUrl">@item.Name</a>
+                </td>
+            }
+            else
+            {
+                @if (item.ThumbnailId is null)
+                {
+                    <td class="thumb-area">📄</td>
+                }
+                else
+                {
+                    <td class="thumb-area">
+                        <img src="/cache/thumbnail/@item.ThumbnailId">
+                    </td>
+                }
+                <td>
+                    <a href="/file/@currentPath[7..]/@itemNameUrl" target="_blank">@item.Name</a>
+                </td>
+            }
+            <td class="size">@(item.Type == "file" ? item.Size : "")</td>
+            <td class="last-modify">@item.LastModify.ToString("yyyy/MM/dd hh:mm:ss")</td>
+        </tr>
+    }
     </tbody>
 </table>
 

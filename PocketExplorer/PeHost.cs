@@ -23,7 +23,8 @@ public class PeHost
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(FileBrowseModel).Assembly)
             .AddApplicationPart(typeof(FileUploadController).Assembly)
-            .AddApplicationPart(typeof(FileRangeController).Assembly);
+            .AddApplicationPart(typeof(FileRangeController).Assembly)
+            .AddApplicationPart(typeof(CacheResourceController).Assembly);
         builder.Services.AddRazorPages(configure =>
         {
             configure.RootDirectory = "/Web/Pages";
@@ -32,7 +33,6 @@ public class PeHost
         _app = builder.Build();
         _app.Services.GetRequiredService<DataKeeper>().PeInstance = instance;
         _app.UsePeAuthentication();
-        _app.UsePeRedirector();
         _app.UseRouting();
         _app.MapControllers();
         _app.MapRazorPages();
