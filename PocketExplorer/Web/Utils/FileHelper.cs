@@ -29,20 +29,17 @@ public class FileHelper
             return (null, null);
         }
 
-        var taskDispatch = new TaskDispatch(20);
-        ConcurrentDictionary<string, byte[]> thumbnailDict = [];
-
         var dirs = Directory.GetDirectories(basePath);
         foreach (var dir in dirs)
         {
-            taskDispatch.AddTask(new Task(() =>
-            {
-                var dirInfo = new DirectoryInfo(dir);
-                items.Add(new DirectoryItem($"{dirInfo.Name}/", 0, "dir", dirInfo.LastWriteTime));
-            }));
+            var dirInfo = new DirectoryInfo(dir);
+            items.Add(new DirectoryItem($"{dirInfo.Name}/", 0, "dir", dirInfo.LastWriteTime));
         }
 
         var files = Directory.GetFiles(basePath);
+        var parallelLimit = ThumbnailHandleParallelLimit(files.Length);
+        var taskDispatch = new TaskDispatch(parallelLimit);
+        ConcurrentDictionary<string, byte[]> thumbnailDict = [];
         foreach (var file in files)
         {
             taskDispatch.AddTask(new Task(() =>
@@ -51,19 +48,24 @@ public class FileHelper
 
                 if (ThumbnailSupportChecker.Check(fileInfo.Extension))
                 {
-                    var bitmap = WindowsThumbnailProvider.GetThumbnail(file, 150, 150, ThumbnailOptions.ThumbnailOnly);
-                    using var memoryStream = new MemoryStream();
-                    bitmap.Save(memoryStream, ImageFormat.Jpeg);
-                    var bytes = memoryStream.ToArray();
                     var thumbnailId = Random.Shared.NextInt64(100000000, long.MaxValue).ToString();
                     while (thumbnailDict.ContainsKey(thumbnailId))
                     {
                         thumbnailId = Random.Shared.NextInt64(100000000, long.MaxValue).ToString();
                     }
 
-                    thumbnailDict[thumbnailId] = bytes;
-                    items.Add(
-                        new DirectoryItem(fileInfo.Name, fileInfo.Length, "file", fileInfo.LastWriteTime, thumbnailId));
+                    var bytes = GetThumbnailWithRetry(file, 5);
+                    if (bytes is not null)
+                    {
+                        thumbnailDict[thumbnailId] = bytes;
+                        items.Add(new DirectoryItem(
+                            fileInfo.Name, fileInfo.Length,
+                            "file", fileInfo.LastWriteTime, thumbnailId));
+                    }
+                    else
+                    {
+                        items.Add(new DirectoryItem(fileInfo.Name, fileInfo.Length, "file", fileInfo.LastWriteTime));
+                    }
                 }
                 else
                 {
@@ -74,6 +76,36 @@ public class FileHelper
 
         taskDispatch.WaitAll();
         return (items.ToList(), thumbnailDict.ToDictionary());
+    }
+
+    private static int ThumbnailHandleParallelLimit(long taskCount)
+    {
+        var calX = Convert.ToDouble(taskCount + 1);
+        var limit = Math.Pow(calX, 0.7692307692307692d);
+        limit = Math.Ceiling(limit);
+        limit = Math.Max(limit, 2000);
+        return Convert.ToInt32(limit);
+    }
+
+    private static byte[]? GetThumbnailWithRetry(string filePath, int maxRetryCount)
+    {
+        for (var retryCount = 0; retryCount < maxRetryCount; retryCount++)
+        {
+            try
+            {
+                var bitmap = WindowsThumbnailProvider.GetThumbnail(filePath, 150, 150, ThumbnailOptions.ThumbnailOnly);
+                using var memoryStream = new MemoryStream();
+                bitmap.Save(memoryStream, ImageFormat.Jpeg);
+                var bytes = memoryStream.ToArray();
+                return bytes;
+            }
+            catch
+            {
+                continue;
+            }
+        }
+
+        return null;
     }
 }
 

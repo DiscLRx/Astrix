@@ -9,12 +9,12 @@ public class CacheResourceController(DataKeeper dataKeeper) : ControllerBase
     private readonly DataKeeper _dataKeeper =  dataKeeper;
 
     [HttpGet("thumbnail/{thumbnailId}")]
-    public Task<IActionResult> GetThumbnail(string thumbnailId)
+    public IActionResult GetThumbnail(string thumbnailId)
     {
         if (!_dataKeeper.ThumbnailDict.TryGetValue(thumbnailId, out var thumbnail))
         {
-            return Task.FromResult<IActionResult>(NotFound());
+            return NotFound();
         }
-        return Task.FromResult<IActionResult>(File(thumbnail, "image/jpeg"));
+        return File(thumbnail, "image/jpeg");
     }
 }
