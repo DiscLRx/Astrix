@@ -83,7 +83,7 @@ public class FileHelper
         var calX = Convert.ToDouble(taskCount + 1);
         var limit = Math.Pow(calX, 0.7692307692307692d);
         limit = Math.Ceiling(limit);
-        limit = Math.Max(limit, 2000);
+        limit = Math.Min(limit, 2000);
         return Convert.ToInt32(limit);
     }
 
